@@ -1,4 +1,4 @@
-const { selectCategories } = require('../model/index')
+const { selectCategories, selectReviewById } = require('../model/index')
 
 exports.getMessage = (req, res) => {
     res.status(200).send({message : "up and running"});
@@ -13,3 +13,8 @@ exports.getCategories = (req, res) => {
         next(err);
     });
 };
+
+exports.getReviewById = (req, res, next) => {
+    const {review_id} = req.params;
+    selectReviewById(review_id).then((review) => res.status(200).send({review})).catch(next);
+  };
