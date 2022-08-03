@@ -72,6 +72,14 @@ describe('/api/reviews/:review_id', () => {
           expect(body.msg).toBe('Route not found')
         })
       });
+      test('This should respond with error 404 when user inputs id of too great a value', () => {
+        const REVIEW_ID = 999;
+        return request(app).get(`/api/reviews/${REVIEW_ID}`).expect(404).then((res) => {
+          expect(res.body.msg).toBe(
+            `review with id: ${REVIEW_ID} does not exist`
+          );
+        })
+      });
       test('This endpoint of PATCH 201 responds with the review object after its vote count has been updated', () => {
         const REVIEW_ID = 1;
         return request
@@ -101,9 +109,46 @@ describe('/api/reviews/:review_id', () => {
             expect(body.msg).toBe('bad request');
           });
       });
+      test('Should respond with err 400 when given inalid data type', () => {
+        const REVIEW_ID = 1;
+        return request(app).patch(`/api/reviews/${REVIEW_ID}`).send({ inc_votes: 'ABCCC'}).expect(400).then((res) => {
+          expect(res.body.msg).toBe('bad request')
+          expect(res.body.detail).toBe('Invalid data type')
+        });
+      });
       test('This should respond with error 404 when user inputs invalid path', () => {
         return request(app).get('/api/category').expect(404).then(({body}) => {
           expect(body.msg).toBe('Route not found')
         })
       });
+      test('This should respond with error 404 when user inputs incorrect endpoint', () => {
+        const REVIEW_ID = 999;
+        return request(app).patch(`/api/reviews/${REVIEW_ID}`).send({ inc_votes: -10 }).expect(404).then((res) => {
+          expect(res.body.msg).toBe(
+            `Review not found`
+          );
+        })
+      });
 });
+
+describe('/api/users', () => {
+  test('This endpoint of GET 200 responds with an array of objects containing key of users', () => {
+    return request(app).get('/api/users').expect(200).then(({ body }) => {
+      expect(body).toBeInstanceOf(Array);
+      body.forEach((user) => {
+          expect(user).toEqual(
+              expect.objectContaining({
+                  username: expect.any(String),
+                  name: expect.any(String),
+                  avatar_url: expect.any(String)
+              })
+          );
+      });
+    });
+  });
+  test('This should respond with error 404 when user puts num instead of char', () => {
+    return request(app).get('/api/1').expect(404).then(({body}) => {
+      expect(body.msg).toBe('Route not found')
+    })
+  }); 
+})

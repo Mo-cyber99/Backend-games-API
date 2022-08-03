@@ -1,4 +1,4 @@
-const { selectCategories, selectReviewById, patchReview } = require('../model/index')
+const { selectCategories, selectReviewById, patchReview, selectUsers } = require('../model/index')
 
 exports.getMessage = (req, res) => {
     res.status(200).send({message : "up and running"});
@@ -26,4 +26,14 @@ exports.updateReview = async (req, res, next) => {
         res.status(201).send({ review });
     })
     .catch(next)
-} 
+};
+
+exports.getUsers = (req, res) => {
+    selectUsers()
+    .then((users) => {
+        res.status(200).send(users);
+    })
+    .catch((err) => {
+        next(err);
+    });
+};
