@@ -46,7 +46,7 @@ describe('/api/reviews/:review_id', () => {
       .get(`/api/reviews/${REVIEW_ID}`)
       .expect(200)
       .then(({ body }) => {
-        expect(body.review).toEqual({
+        expect(body.review).toMatchObject({
           review_id: 2,
           title: 'Jenga',
           category: 'dexterity',
@@ -134,15 +134,14 @@ describe('/api/reviews/:review_id', () => {
 describe('/api/users', () => {
   test('This endpoint of GET 200 responds with an array of objects containing key of users', () => {
     return request(app).get('/api/users').expect(200).then(({ body }) => {
-      expect(body).toBeInstanceOf(Array);
-      body.forEach((user) => {
-          expect(user).toEqual(
-              expect.objectContaining({
+      const { users } = body;
+      expect(users.length).toBe(4);
+      users.forEach((user) => {
+          expect(user).toMatchObject({
                   username: expect.any(String),
                   name: expect.any(String),
                   avatar_url: expect.any(String)
               })
-          );
       });
     });
   });
@@ -151,4 +150,14 @@ describe('/api/users', () => {
       expect(body.msg).toBe('Route not found')
     })
   }); 
+});
+
+describe('GET /api/reviews/:review_id (comment count)', () => {
+  test('This endpoint of GET 200 responds with a comment_count object', () => {
+    const REVIEW_ID = 2;
+    return request(app)
+    .get(`/api/reviews/${REVIEW_ID}`).expect(200).then(({ body }) => {
+      expect(body.review[0]).hasOwnProperty('comment_count');
+    });
+  });
 })
