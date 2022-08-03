@@ -19,11 +19,12 @@ exports.getReviewById = (req, res, next) => {
     selectReviewById(review_id).then((review) => res.status(200).send({review})).catch(next);
   };
 
-exports.updateReview = async (req, res, next) => {
+exports.updateReview = 
+(req, res, next) => {
     const { review_id } = req.params;
     const { inc_votes } = req.body;
-    patchReview(review_id, inc_votes).then((review) => {
-        res.status(201).send({ review });
+    patchReview(review_id, inc_votes).then((newReview) => {
+        res.status(201).send({ review: newReview });
     })
     .catch(next)
 };

@@ -87,8 +87,8 @@ describe('/api/reviews/:review_id', () => {
         .patch(`/api/reviews/${REVIEW_ID}`)
         .send({ inc_votes: -1 })
         .expect(201)
-        .then(({ body: { review }}) => {
-          expect(review[0]).toEqual({
+        .then(({ body }) => {
+          expect(body.review).toEqual({
             review_id: 1,
           title: 'Agricola',
           category: 'euro game',

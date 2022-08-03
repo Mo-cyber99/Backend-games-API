@@ -22,22 +22,22 @@ exports.selectReviewById = (review_id) => {
     });
 };
 
-exports.patchReview = async (review_id, inc_votes) => {
-    if(!inc_votes) {
-        return Promise.reject({
-            status: 400,
-            msg: 'bad request',
-        detail: 'Invalid data type'
-        });
-    }
-
-    const updated = await db.query(`UPDATE reviews SET votes = votes + $1 
+exports.patchReview = (review_id, inc_votes) => {
+    return db
+    .query(`UPDATE reviews SET votes = votes + $1 
     WHERE review_id = $2 RETURNING *;`, [inc_votes, review_id])
-    .then((result) => result.rows);
-
-    if(!updated.length) return Promise.reject({ status: 404, msg: "Review not found"});
-
-    return updated;
+    .then((result) => {
+        if(!result.rows.length) {
+            return Promise.reject({ status: 404, msg: "Review not found"});
+        } else if(!inc_votes) {
+                return Promise.reject({
+                    status: 400,
+                    msg: 'bad request',
+                detail: 'Invalid data type'
+                });
+            }
+            return result.rows[0];
+    });
 };
 
 exports.selectUsers = () => {
