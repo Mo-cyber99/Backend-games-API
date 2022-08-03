@@ -72,4 +72,38 @@ describe('/api/reviews/:review_id', () => {
           expect(body.msg).toBe('Route not found')
         })
       });
-})
+      test('This endpoint of PATCH 201 responds with the review object after its vote count has been updated', () => {
+        const REVIEW_ID = 1;
+        return request
+        .agent(app)
+        .patch(`/api/reviews/${REVIEW_ID}`)
+        .send({ inc_votes: -1 })
+        .expect(201)
+        .then(({ body: { review }}) => {
+          expect(review[0]).toEqual({
+            review_id: 1,
+          title: 'Agricola',
+          category: 'euro game',
+          designer: 'Uwe Rosenberg',
+          owner: 'mallionaire',
+          review_body: 'Farmyard fun!',
+          review_img_url: 'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png',
+          created_at: "2021-01-18T10:00:20.514Z",
+          votes: 0
+          })
+        })
+      });
+      test('This should respond with error 400 when user puts char instead of num', () => {
+        return request(app)
+          .get('/api/reviews/notAnID')
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe('bad request');
+          });
+      });
+      test('This should respond with error 404 when user inputs invalid path', () => {
+        return request(app).get('/api/category').expect(404).then(({body}) => {
+          expect(body.msg).toBe('Route not found')
+        })
+      });
+});
