@@ -185,4 +185,14 @@ describe('GET /api/reviews', () => {
         });
       });
   });
+  test('This endpoint tests reviews to ensure they are sorted in order of descending date by default', () => {
+    return request(app)
+    .get('/api/reviews')
+    .expect(200)
+    .then(({body}) => {
+      expect(body).toBeSortedBy("created_at", {
+        descending: true
+      });
+    });
+  });
 })
