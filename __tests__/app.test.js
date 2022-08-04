@@ -279,4 +279,63 @@ test('This endpoint of GET 200 responds with an array of comments for the given 
         expect(result.body.comments).toHaveLength(0);
       });
   });
+});
+
+describe('POST /api/reviews/:review_id/comments', () => {
+  test('This endpoint of POST 201 should respond with the posted comment', () => {
+    const REVIEW_ID = 3;
+    const newComments = {
+      author: 'bainesface',
+      body: 'This is awesome! clap clap clap'
+    };
+    return request(app)
+    .post(`/api/reviews/${REVIEW_ID}/comments`)
+    .send(newComments)
+    .expect(201)
+    .then(({ body }) => {
+      expect(body.returnComment).toEqual(
+        expect.objectContaining({
+          author: 'bainesface',
+           body: 'This is awesome! clap clap clap'
+        })
+      );
+    });
+  });
+  test('This should respond with error 400 when NaN passes as the id in the path', () => {
+    const newComments = {
+      author: 'bainesface',
+      body: 'This is awesome! clap clap clap'
+    };
+    return request(app)
+      .post("/api/reviews/NotANumber/comments")
+      .send(newComments)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('bad request');
+      });
+  });
+  test('This should respond with error 400 when  body does not contain both mandatory keys', () => {
+    const newComments = {};
+    return request(app)
+      .post("/api/reviews/NotANumber/comments")
+      .send(newComments)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('bad request');
+      });
+  });
+  test('This should respond with error 404 when a user not in the database tries to post', () => {
+    const REVIEW_ID = 3;
+    const newComments = {
+      author: 'NotAnAuthor',
+      body: 'This is rad bruh',
+    };
+    return request(app)
+      .post(`/api/reviews/${REVIEW_ID}/comments`)
+      .send(newComments)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Route not found");
+      });
+  });
 })

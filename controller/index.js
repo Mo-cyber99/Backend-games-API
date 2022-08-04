@@ -1,5 +1,5 @@
 const comments = require('../db/data/test-data/comments');
-const { selectCategories, selectReviewById, patchReview, selectUsers, selectReviews, selectComments, checkCommentsExists } = require('../model/index')
+const { selectCategories, selectReviewById, patchReview, selectUsers, selectReviews, selectComments, checkCommentsExists, insertComments } = require('../model/index')
 
 const {checkReviewExists} = require('../model/utils.model')
 
@@ -52,5 +52,14 @@ exports.getComments = (req, res, next) => {
       res.status(200).send({ comments: result });
     })
     .catch(next)
+};
 
+exports.postComments = (req, res, next) => {
+    const {body} = req;
+    const {review_id} = req.params;
+    insertComments(body, review_id)
+    .then((returnComment) => {
+        res.status(201).send({ returnComment });
+    })
+    .catch(next)
 }
