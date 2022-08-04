@@ -1,4 +1,4 @@
-const { selectCategories, selectReviewById, patchReview, selectUsers, selectComments, selectReviews } = require('../model/index')
+const { selectCategories, selectReviewById, patchReview, selectUsers, selectReviews } = require('../model/index')
 
 exports.getMessage = (req, res) => {
     res.status(200).send({message : "up and running"});
