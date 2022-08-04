@@ -34,12 +34,21 @@ exports.getUsers = (req, res, next) => {
     .catch(next);
 };
 
-exports.getComments = (req, res, next) => {
-    const { review_id } = req.params;
-
-    Promise.all([selectReviewById(review_id), selectComments(review_id)])
-      .then(([, comments]) => {
-        res.status(200).send({ comments });
-      })
-      .catch(next)
+exports.getReviews = (req, res, next) => {
+    selectReviews()
+    .then((reviews) => {
+        res.status(200).send(reviews)
+    })
+    .catch(next)
 }
+
+// exports.getComments = (req, res, next) => {
+//     const { review_id } = req.params;
+
+//     Promise.all([selectReviewById(review_id), selectComments(review_id)])
+//       .then(([, comments]) => {
+//         res.status(200).send({ comments });
+//       })
+//       .catch(next)
+// }
+

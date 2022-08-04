@@ -48,10 +48,18 @@ exports.selectUsers = () => {
     });
 };
 
-exports.selectComments = (review_id) => {
+// exports.selectComments = (review_id) => {
+//     return db
+//       .query(`SELECT * FROM comments WHERE review_id = $1;`, [review_id])
+//       .then((result) => {
+//         return result.rows;
+//       });
+//   };
+
+exports.selectReviews = (review_id) => {
     return db
-      .query(`SELECT * FROM comments WHERE review_id = $1`, [review_id])
-      .then((result) => {
-        return result.rows;
-      });
-  };
+    .query(`SELECT reviews.*, COUNT(comments.review_id):: int AS comment_count FROM reviews LEFT JOIN comments ON comments.review_id = reviews.review_id WHERE reviews.review_id = $1 GROUP BY reviews.review_id;`, [review_id])   
+    .then(({ rows: reviews }) => {
+        return reviews
+    })
+};
