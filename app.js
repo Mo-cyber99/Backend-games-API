@@ -1,5 +1,5 @@
 const express = require('express');
-const { getMessage, getCategories, getReviewById, updateReview, getUsers, getComments } = require('./controller/index');
+const { getMessage, getCategories, getReviewById, updateReview, getUsers, getReviews } = require('./controller/index');
 
 const app = express();
 
@@ -13,7 +13,9 @@ app.patch('/api/reviews/:review_id', updateReview);
 
 app.get('/api/users', getUsers);
 
-// app.get('/api/reviews/:review_id', getComments);
+app.get('/api/reviews', getReviews)
+
+
 
 app.all('/*', (req, res) => {
     res.status(404).send({ msg: 'Route not found' });

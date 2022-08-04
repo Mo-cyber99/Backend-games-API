@@ -48,10 +48,11 @@ exports.selectUsers = () => {
     });
 };
 
-exports.selectComments = (review_id) => {
+
+exports.selectReviews = (sort_by = "created_at", order = "desc") => {
     return db
-      .query(`SELECT * FROM comments WHERE review_id = $1`, [review_id])
-      .then((result) => {
-        return result.rows;
-      });
-  };
+    .query(`SELECT reviews.*, COUNT(comments.review_id):: int AS comment_count FROM reviews LEFT JOIN comments ON comments.review_id = reviews.review_id GROUP BY reviews.review_id ORDER BY ${sort_by} ${order};`)   
+    .then(({rows: reviews}) => {
+        return reviews;
+    })
+};

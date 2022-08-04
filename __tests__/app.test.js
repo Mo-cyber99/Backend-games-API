@@ -160,4 +160,39 @@ describe('GET /api/reviews/:review_id (comment count)', () => {
       expect(body.review[0]).hasOwnProperty('comment_count');
     });
   });
+});
+
+describe('GET /api/reviews', () => {
+  test('This endpoint of GET 200 responds with an array of review objects', () => {
+    return request(app)
+      .get('/api/reviews')
+      .expect(200)
+      .then(({ body }) => {
+       expect(body).toBeInstanceOf(Array);
+        body.forEach((review) => {
+          expect(review).toEqual(
+            expect.objectContaining({
+              review_id: expect.any(Number),
+              title: expect.any(String),
+              designer: expect.any(String),
+              owner: expect.any(String),
+              review_img_url: expect.any(String),
+              category: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              comment_count: expect.any(Number)
+            }));              
+        });
+      });
+  });
+  test('This endpoint tests reviews to ensure they are sorted in order of descending date by default', () => {
+    return request(app)
+    .get('/api/reviews')
+    .expect(200)
+    .then(({body}) => {
+      expect(body).toBeSortedBy("created_at", {
+        descending: true
+      });
+    });
+  });
 })
