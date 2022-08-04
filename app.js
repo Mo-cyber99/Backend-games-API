@@ -1,5 +1,5 @@
 const express = require('express');
-const { getMessage, getCategories, getReviewById, updateReview, getUsers, getReviews } = require('./controller/index');
+const { getMessage, getCategories, getReviewById, updateReview, getUsers, getReviews, getComments, checkExists } = require('./controller/index');
 
 const app = express();
 
@@ -13,8 +13,9 @@ app.patch('/api/reviews/:review_id', updateReview);
 
 app.get('/api/users', getUsers);
 
-app.get('/api/reviews', getReviews)
+app.get('/api/reviews', getReviews);
 
+app.get('/api/reviews/:review_id/comments', getComments);
 
 
 app.all('/*', (req, res) => {
@@ -32,7 +33,7 @@ app.all('/*', (req, res) => {
 
   app.use((err, req, res, next) => {
     if (err.code === '23503') {
-      res.status(404).send({msg : 'not found'})
+      res.status(404).send({msg : 'Route not found'})
     }
     else next(err);
   })
@@ -40,7 +41,7 @@ app.all('/*', (req, res) => {
   // custom errors
   app.use((err, req, res, next) => {
     if (err.status) {
-      res.status(err.status).send({msg: err.msg})
+      res.status(err.status).send({ msg: err.msg, detail: err.detail })
     }
     else next(err);
   });
