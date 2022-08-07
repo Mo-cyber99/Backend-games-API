@@ -1,5 +1,5 @@
 const comments = require('../db/data/test-data/comments');
-const { selectCategories, selectReviewById, patchReview, selectUsers, selectReviews, selectComments, insertComments } = require('../model/index')
+const { selectCategories, selectReviewById, patchReview, selectUsers, selectReviews, selectComments, insertComments, removeComments } = require('../model/index')
 
 const { checkIfCategoryExists  } = require('../model/utils.model')
 
@@ -46,7 +46,6 @@ exports.getReviews = (req, res, next) => {
   }
   Promise.all(promises)
   .then(([result]) => {
-    console.log(result);
     res.status(200).send(result);
   })
     // selectReviews()
@@ -71,6 +70,15 @@ exports.postComments = (req, res, next) => {
     insertComments(body, review_id)
     .then((returnComment) => {
         res.status(201).send({ returnComment });
+    })
+    .catch(next)
+};
+
+exports.deleteComments = (req, res, next) => {
+    const { comment_id } = req.params;
+    removeComments(comment_id)
+    .then(() => {
+        res.status(204).send();
     })
     .catch(next)
 }

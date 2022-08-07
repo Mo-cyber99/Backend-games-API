@@ -1,5 +1,5 @@
 const express = require('express');
-const { getMessage, getCategories, getReviewById, updateReview, getUsers, getReviews, getComments, postComments } = require('./controller/index');
+const { getMessage, getCategories, getReviewById, updateReview, getUsers, getReviews, getComments, postComments, deleteComments } = require('./controller/index');
 
 const app = express();
 
@@ -17,6 +17,8 @@ app.get('/api/reviews', getReviews);
 
 app.get('/api/reviews/:review_id/comments', getComments);
 app.post('/api/reviews/:review_id/comments', postComments);
+
+app.delete('/api/comments/:comment_id', deleteComments);
 
 
 app.all('/*', (req, res) => {

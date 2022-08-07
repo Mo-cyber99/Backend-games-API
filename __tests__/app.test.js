@@ -359,4 +359,21 @@ describe('POST /api/reviews/:review_id/comments', () => {
         expect(body.msg).toBe("Route not found");
       });
   });
+});
+
+describe.only('DELETE /api/comments/:comment_id', () => {
+  test('This endpoint of DELETE 204 should delete the given comment by comment_id', () => {
+    const COMMENT_ID = 2
+    return request(app)
+    .delete(`/api/comments/${COMMENT_ID}`)
+    .expect(204);
+  });
+  test('This should respond with error 400 when NaN passes as the id in the path', () => {
+    return request(app)
+    .delete(`/api/comments/NotANumber`)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('bad request');
+      });
+  });
 })

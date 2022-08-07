@@ -106,5 +106,19 @@ exports.insertComments = ({ author, body }, review_id) => {
         }
         return result.rows[0];
     });
+};
+
+exports.removeComments = (comment_id) => {
+    return db
+    .query(`DELETE from comments
+    WHERE comment_id = $1 RETURNING *;`, [comment_id])
+    .then((result) => {
+        if(!result.rows.length) {
+            Promise.reject({
+                status: 400,
+                msg: 'bad request'
+              });
+        }
+    });
 }
 
