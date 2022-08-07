@@ -189,8 +189,29 @@ describe('GET /api/reviews', () => {
     return request(app)
     .get('/api/reviews')
     .expect(200)
-    .then(({body}) => {
+    .then(({ body }) => {
       expect(body).toBeSortedBy("created_at", {
+        descending: true
+      });
+    });
+  });
+  test('This endpoint should accept the following queries - sort_by, which sorts the reviews by votes', () => {
+    return request(app)
+    .get('/api/reviews?sort_by=votes')
+    .expect(200)
+    .then(({ body }) => {
+      console.log(body);
+      expect(body).toBeSortedBy("votes", {
+        descending: true
+      });
+    });
+  });
+  test('This endpoint should sort by title', () => {
+    return request(app)
+    .get('/api/reviews?sort_by=title')
+    .expect(200)
+    .then(({ body }) => {
+      expect(body).toBeSortedBy("title", {
         descending: true
       });
     });

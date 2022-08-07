@@ -1,7 +1,7 @@
 const comments = require('../db/data/test-data/comments');
-const { selectCategories, selectReviewById, patchReview, selectUsers, selectReviews, selectComments, checkCommentsExists, insertComments } = require('../model/index')
+const { selectCategories, selectReviewById, patchReview, selectUsers, selectReviews, selectComments, insertComments } = require('../model/index')
 
-const {checkReviewExists} = require('../model/utils.model')
+const { checkIfCategoryExists  } = require('../model/utils.model')
 
 exports.getMessage = (req, res) => {
     res.status(200).send({message : "up and running"});
@@ -38,10 +38,21 @@ exports.getUsers = (req, res, next) => {
 };
 
 exports.getReviews = (req, res, next) => {
-    selectReviews()
-    .then((reviews) => {
-        res.status(200).send(reviews)
-    })
+    const { sort_by, order, category } = req.query;
+    const promises = [selectReviews(sort_by, order, category)];
+
+  if (category) {
+    promises.push(checkIfCategoryExists(category));
+  }
+  Promise.all(promises)
+  .then(([result]) => {
+    console.log(result);
+    res.status(200).send(result);
+  })
+    // selectReviews()
+    // .then((reviews) => {
+    //     res.status(200).send(reviews)
+    // })
     .catch(next)
 };
 

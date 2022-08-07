@@ -50,7 +50,32 @@ exports.selectUsers = () => {
 };
 
 
-exports.selectReviews = (sort_by = "created_at", order = "desc") => {
+exports.selectReviews = (sort_by = "created_at", order = "desc", category) => {
+    // const validSortBy = ["created_at", "votes", "owner", "title"];
+	// const validOrderBy = ["asc", "desc"];
+	// const validCategory = [];
+
+    // let queryStr = 'SELECT reviews.*, COUNT(comments.review_id):: int AS comment_count FROM reviews LEFT JOIN comments ON comments.review_id = reviews.review_id;'
+
+    // // if (!isNaN(category)) {
+	// // 	return Promise.reject({ status: 400, msg: 'bad request' });
+	// // }
+
+    // if (category) {
+    //     validCategory.push(category);
+    //     queryStr += `WHERE reviews.category = $1;`
+    // }
+
+    // console.log(sort_by, order);
+    // if(validSortBy.includes(sort_by) && validOrderBy.includes(order)) {
+    //     queryStr += `GROUP BY reviews.review_id ORDER BY ${sort_by} ${order}`
+    // }
+
+    //     return db
+    //     .query(queryStr, validCategory)
+    //     .then(({rows}) => {
+    //         return rows;
+    //     })
     return db
     .query(`SELECT reviews.*, COUNT(comments.review_id):: int AS comment_count FROM reviews LEFT JOIN comments ON comments.review_id = reviews.review_id GROUP BY reviews.review_id ORDER BY ${sort_by} ${order};`)   
     .then(({rows: reviews}) => {
@@ -76,9 +101,10 @@ exports.insertComments = ({ author, body }, review_id) => {
         if(!author && body) {
             Promise.reject({
                 status: 400,
-                msg: 'bad request',
+                msg: 'bad request'
               });
         }
         return result.rows[0];
     });
 }
+
