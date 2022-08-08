@@ -11,10 +11,10 @@ afterAll(() => {
 });
 
 describe('GET /api', () => {
-    test('The endpoint should respond with a json object containing a message key', () => {
-        return request(app).get('/api').expect(200).then((body) => {
-            body = {"message" : "up and running"}
-        })
+    test('This endpoint should respond with a json object containing available endpoints on API', () => {
+        return request(app).get('/api').expect(200).then((result) => {
+            expect(result.body).toBeInstanceOf(Object);
+        });
     });
 });
 
@@ -361,7 +361,7 @@ describe('POST /api/reviews/:review_id/comments', () => {
   });
 });
 
-describe.only('DELETE /api/comments/:comment_id', () => {
+describe('DELETE /api/comments/:comment_id', () => {
   test('This endpoint of DELETE 204 should delete the given comment by comment_id', () => {
     const COMMENT_ID = 2
     return request(app)

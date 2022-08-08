@@ -1,13 +1,4 @@
 const db = require('../db/connection');
-const comments = require('../db/data/test-data/comments');
-
-exports.selectCategories = () => {
-    return db
-    .query("SELECT * FROM categories;")
-    .then(({ rows: categories }) => {
-        return categories
-    });
-};
 
 exports.selectReviewById = (review_id) => {
     return db
@@ -41,15 +32,6 @@ exports.patchReview = (review_id, inc_votes) => {
     });
 };
 
-exports.selectUsers = () => {
-    return db
-    .query("SELECT * FROM users;")
-    .then(({ rows: users }) => {
-        return users
-    });
-};
-
-
 exports.selectReviews = (sort_by = "created_at", order = "desc", category) => {
     // const validSortBy = ["created_at", "votes", "owner", "title"];
 	// const validOrderBy = ["asc", "desc"];
@@ -82,43 +64,3 @@ exports.selectReviews = (sort_by = "created_at", order = "desc", category) => {
         return reviews;
     })
 };
-
-exports.selectComments = (review_id) => {
-    return db
-    .query(`SELECT * FROM comments WHERE review_id = $1;`, [review_id])
-    .then((result) => {
-    return result.rows;
-    })
-    
-};
-
-exports.insertComments = ({ author, body }, review_id) => {
-    return db
-    .query(`INSERT INTO comments (author, body, review_id)
-    VALUES ($1, $2, $3)
-    RETURNING author, body;`, [author, body, review_id])
-    .then((result) => {
-        if(!author && body) {
-            Promise.reject({
-                status: 400,
-                msg: 'bad request'
-              });
-        }
-        return result.rows[0];
-    });
-};
-
-exports.removeComments = (comment_id) => {
-    return db
-    .query(`DELETE from comments
-    WHERE comment_id = $1 RETURNING *;`, [comment_id])
-    .then((result) => {
-        if(!result.rows.length) {
-            Promise.reject({
-                status: 400,
-                msg: 'bad request'
-              });
-        }
-    });
-}
-
