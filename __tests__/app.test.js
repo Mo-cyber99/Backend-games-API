@@ -11,10 +11,10 @@ afterAll(() => {
 });
 
 describe('GET /api', () => {
-    test('The endpoint should respond with a json object containing a message key', () => {
-        return request(app).get('/api').expect(200).then((body) => {
-            body = {"message" : "up and running"}
-        })
+    test('This endpoint should respond with a json object containing available endpoints on API', () => {
+        return request(app).get('/api').expect(200).then((result) => {
+            expect(result.body).toBeInstanceOf(Object);
+        });
     });
 });
 
@@ -189,8 +189,29 @@ describe('GET /api/reviews', () => {
     return request(app)
     .get('/api/reviews')
     .expect(200)
-    .then(({body}) => {
+    .then(({ body }) => {
       expect(body).toBeSortedBy("created_at", {
+        descending: true
+      });
+    });
+  });
+  test('This endpoint should accept the following queries - sort_by, which sorts the reviews by votes', () => {
+    return request(app)
+    .get('/api/reviews?sort_by=votes')
+    .expect(200)
+    .then(({ body }) => {
+      console.log(body);
+      expect(body).toBeSortedBy("votes", {
+        descending: true
+      });
+    });
+  });
+  test('This endpoint should sort by title', () => {
+    return request(app)
+    .get('/api/reviews?sort_by=title')
+    .expect(200)
+    .then(({ body }) => {
+      expect(body).toBeSortedBy("title", {
         descending: true
       });
     });
@@ -336,6 +357,23 @@ describe('POST /api/reviews/:review_id/comments', () => {
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("Route not found");
+      });
+  });
+});
+
+describe('DELETE /api/comments/:comment_id', () => {
+  test('This endpoint of DELETE 204 should delete the given comment by comment_id', () => {
+    const COMMENT_ID = 2
+    return request(app)
+    .delete(`/api/comments/${COMMENT_ID}`)
+    .expect(204);
+  });
+  test('This should respond with error 400 when NaN passes as the id in the path', () => {
+    return request(app)
+    .delete(`/api/comments/NotANumber`)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('bad request');
       });
   });
 })
