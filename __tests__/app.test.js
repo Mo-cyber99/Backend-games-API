@@ -216,6 +216,25 @@ describe('GET /api/reviews', () => {
       });
     });
   });
+  test('This endpoint should sort by owner ', () => {
+    return request(app)
+      .get("/api/reviews?sort_by=owner")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toBeSortedBy("owner", { descending: true });
+      });
+  });
+  test('This endpoint should sort reviews by category', () => {
+    return request(app)
+			.get(`/api/reviews?category=social deduction`)
+			.expect(200)
+			.then(({ body: { reviews } }) => {
+				expect(reviews).toHaveLength(11);
+				reviews.forEach(({ category }) => {
+					expect(category).toBe("social deduction");
+				});
+			});
+  });
 });
 
 describe('GET /api/reviews/:review_id/comments', () => {

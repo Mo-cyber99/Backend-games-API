@@ -39,9 +39,9 @@ exports.selectReviews = (sort_by = "created_at", order = "desc", category) => {
 
     // let queryStr = 'SELECT reviews.*, COUNT(comments.review_id):: int AS comment_count FROM reviews LEFT JOIN comments ON comments.review_id = reviews.review_id;'
 
-    // // if (!isNaN(category)) {
-	// // 	return Promise.reject({ status: 400, msg: 'bad request' });
-	// // }
+    // if (!isNaN(category)) {
+	// 	return Promise.reject({ status: 400, msg: 'bad request' });
+	// }
 
     // if (category) {
     //     validCategory.push(category);
@@ -55,8 +55,8 @@ exports.selectReviews = (sort_by = "created_at", order = "desc", category) => {
 
     //     return db
     //     .query(queryStr, validCategory)
-    //     .then(({rows}) => {
-    //         return rows;
+    //     .then((result) => {
+    //         return result.rows;
     //     })
     return db
     .query(`SELECT reviews.*, COUNT(comments.review_id):: int AS comment_count FROM reviews LEFT JOIN comments ON comments.review_id = reviews.review_id GROUP BY reviews.review_id ORDER BY ${sort_by} ${order};`)   
