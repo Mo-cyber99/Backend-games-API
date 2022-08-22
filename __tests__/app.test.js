@@ -13,6 +13,7 @@ afterAll(() => {
 describe('GET /api', () => {
     test('This endpoint should respond with a json object containing available endpoints on API', () => {
         return request(app).get('/api').expect(200).then((result) => {
+          console.log(result.body);
             expect(result.body).toBeInstanceOf(Object);
         });
     });
@@ -200,7 +201,6 @@ describe('GET /api/reviews', () => {
     .get('/api/reviews?sort_by=votes')
     .expect(200)
     .then(({ body }) => {
-      console.log(body);
       expect(body).toBeSortedBy("votes", {
         descending: true
       });
