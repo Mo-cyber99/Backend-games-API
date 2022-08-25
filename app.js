@@ -16,15 +16,18 @@ const {
 
 const app = express();
 
-app.use(cors());
+const corsOptions = {
+	origin: 'https://backend-games-api.herokuapp.com',
+	optionsSuccessStatus: 200 
+  }
 
-app.use(cors())
+app.use(cors());
 
 app.use(express.json());
 
 app.use(bodyParser.json())
 
-app.get("/", healthCheck);
+app.get("/", healthCheck, cors(corsOptions));
 
 app.get('/api', getAPI)
 
