@@ -39,15 +39,15 @@ exports.selectReviews = (sort_by = "created_at", order = "desc", category) => {
 
     let queryStr = 'SELECT reviews.*, COUNT(comments.review_id):: int AS comment_count FROM reviews LEFT JOIN comments ON comments.review_id = reviews.review_id ';
 
-    // if (!isNaN(category)) {
-	// 	return Promise.reject({ status: 400, msg: 'bad request' });
-	// }
+    if (!isNaN(category)) {
+		return Promise.reject({ status: 400, msg: 'bad request' });
+	}
 
-    // if (category) {
-    //     console.log(category);
-    //     validCategory.push(category);
-    //     queryStr += ` WHERE reviews.category = $1;`
-    // }
+    if (category) {
+        console.log(category);
+        validCategory.push(category);
+        queryStr += ` WHERE reviews.category = $1;`
+    }
 
     if(validSortBy.includes(sort_by) && validOrderBy.includes(order)) {
         queryStr += `GROUP BY reviews.review_id ORDER BY ${sort_by} ${order}`
