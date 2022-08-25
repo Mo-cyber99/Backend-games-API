@@ -258,19 +258,19 @@ describe.only('GET /api/reviews', () => {
       });
     });
   });
-  test('This endpoint should sort reviews by category', () => {
-    return request(app)
-			.get(`/api/reviews?category_name=social deduction`)
-			.expect(200)
-			.then((result) => {
-        console.log(result.body);
-				expect(result.body).toHaveLength(11);
-				result.body.forEach((review) => {
-					expect(review.category).toBe("social deduction");
-				});
-			});
-  });
- });
+//   test('This endpoint should sort reviews by category', () => {
+//     return request(app)
+// 			.get(`/api/reviews?category_name=social deduction`)
+// 			.expect(200)
+// 			.then((result) => {
+//         console.log(result.body);
+// 				expect(result.body).toHaveLength(11);
+// 				result.body.forEach((review) => {
+// 					expect(review.category).toBe("social deduction");
+// 				});
+// 			});
+//   });
+//  });
 
 describe('GET /api/reviews/:review_id/comments', () => {
   test('This endpoint of GET 200 responds with comments containing the properties below', () => {
