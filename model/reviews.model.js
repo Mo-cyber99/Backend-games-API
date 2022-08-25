@@ -46,7 +46,7 @@ exports.selectReviews = (sort_by = "created_at", order = "desc", category) => {
     if (category) {
         console.log(category);
         validCategory.push(category);
-        queryStr += ` WHERE reviews.category = $1;`
+        queryStr += ` WHERE reviews.category = $1 `
     }
 
     if(validSortBy.includes(sort_by) && validOrderBy.includes(order)) {
@@ -54,7 +54,7 @@ exports.selectReviews = (sort_by = "created_at", order = "desc", category) => {
     }
 
         return db
-        .query(queryStr)
+        .query(queryStr, validCategory)
         .then((result) => {
             return result.rows;
         })
