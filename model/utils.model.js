@@ -1,3 +1,5 @@
+const db = require('../db/connection');
+
 exports.checkIfCategoryExists = (category) => {
   return db
   .query(`SELECT * FROM categories WHERE slug = $1;`, [category])
