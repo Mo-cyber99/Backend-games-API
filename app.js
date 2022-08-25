@@ -1,6 +1,9 @@
 const express = require('express');
+const cors = require('cors');
+const bodyParser = require('body-parser')
+
 const { getReviewById, updateReview, getReviews} = require('./controller/reviews.controller');
-const { getAPI } = require('./controller/api.controller');
+const { getAPI, healthCheck } = require('./controller/api.controller');
 const { getCategories } = require('./controller/categories.controller')
 const { getComments, postComments, deleteComments } = require('./controller/comments.controller')
 const { getUsers } = require('./controller/users.controller')
@@ -10,13 +13,16 @@ const {
 	handleServerErrrors,
 } = require('./errorHandlers');
 
-const cors = require('cors');
 
 const app = express();
 
 app.use(cors());
 
 app.use(express.json());
+
+app.use(bodyParser.json())
+
+app.get("/", healthCheck);
 
 app.get('/api', getAPI)
 

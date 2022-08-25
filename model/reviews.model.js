@@ -33,34 +33,34 @@ exports.patchReview = (review_id, inc_votes) => {
 };
 
 exports.selectReviews = (sort_by = "created_at", order = "desc", category) => {
-    // const validSortBy = ["created_at", "votes", "owner", "title"];
-	// const validOrderBy = ["asc", "desc"];
-	// const validCategory = [];
+    const validSortBy = ["created_at", "votes", "owner", "title"];
+	const validOrderBy = ["asc", "desc"];
+	const validCategory = [];
 
-    // let queryStr = 'SELECT reviews.*, COUNT(comments.review_id):: int AS comment_count FROM reviews LEFT JOIN comments ON comments.review_id = reviews.review_id;'
+    let queryStr = 'SELECT reviews.*, COUNT(comments.review_id):: int AS comment_count FROM reviews LEFT JOIN comments ON comments.review_id = reviews.review_id ';
 
-    // if (!isNaN(category)) {
-	// 	return Promise.reject({ status: 400, msg: 'bad request' });
-	// }
+    if (!isNaN(category)) {
+		return Promise.reject({ status: 400, msg: 'bad request' });
+	}
 
-    // if (category) {
-    //     validCategory.push(category);
-    //     queryStr += `WHERE reviews.category = $1;`
-    // }
+    if (category) {
+        console.log(category);
+        validCategory.push(category);
+        queryStr += ` WHERE reviews.category = $1;`
+    }
 
-    // console.log(sort_by, order);
-    // if(validSortBy.includes(sort_by) && validOrderBy.includes(order)) {
-    //     queryStr += `GROUP BY reviews.review_id ORDER BY ${sort_by} ${order}`
-    // }
+    if(validSortBy.includes(sort_by) && validOrderBy.includes(order)) {
+        queryStr += `GROUP BY reviews.review_id ORDER BY ${sort_by} ${order}`
+    }
 
-    //     return db
-    //     .query(queryStr, validCategory)
-    //     .then((result) => {
-    //         return result.rows;
-    //     })
-    return db
-    .query(`SELECT reviews.*, COUNT(comments.review_id):: int AS comment_count FROM reviews LEFT JOIN comments ON comments.review_id = reviews.review_id GROUP BY reviews.review_id ORDER BY ${sort_by} ${order};`)   
-    .then(({rows: reviews}) => {
-        return reviews;
-    })
+        return db
+        .query(queryStr, validCategory)
+        .then((result) => {
+            return result.rows;
+        })
+    // return db
+    // .query(`SELECT reviews.*, COUNT(comments.review_id):: int AS comment_count FROM reviews LEFT JOIN comments ON comments.review_id = reviews.review_id GROUP BY reviews.review_id ORDER BY ${sort_by} ${order};`)   
+    // .then(({rows: reviews}) => {
+    //     return reviews;
+    // })
 };

@@ -163,7 +163,7 @@ describe('GET /api/reviews/:review_id (comment count)', () => {
   });
 });
 
-describe('GET /api/reviews', () => {
+describe.only('GET /api/reviews', () => {
   test('This endpoint of GET 200 responds with an array of review objects', () => {
     return request(app)
       .get('/api/reviews')
@@ -216,7 +216,7 @@ describe('GET /api/reviews', () => {
       });
     });
   });
-  test('This endpoint should sort by owner ', () => {
+  test('This endpoint should sort by owner', () => {
     return request(app)
       .get("/api/reviews?sort_by=owner")
       .expect(200)
@@ -224,18 +224,53 @@ describe('GET /api/reviews', () => {
         expect(body).toBeSortedBy("owner", { descending: true });
       });
   });
-  // test('This endpoint should sort reviews by category', () => {
-  //   return request(app)
-	// 		.get(`/api/reviews?category=social deduction`)
-	// 		.expect(200)
-	// 		.then(({ body: { reviews } }) => {
-	// 			expect(reviews).toHaveLength(11);
-	// 			reviews.forEach(({ category }) => {
-	// 				expect(category).toBe("social deduction");
-	// 			});
-	// 		});
-  // });
-});
+  test('This endpoint should be descending as default', () => {
+    return request(app)
+      .get("/api/reviews?order=desc")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toBeSortedBy("created_at", { descending: true });
+      });
+  });
+  test('This endpoint should return reviews in asc order', () => {
+    return request(app)
+      .get("/api/reviews?order=asc")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toBeSortedBy("created_at", { ascending: true });
+      });
+  });
+  test('This endpoint should sort by owner in asc order', () => {
+    return request(app)
+      .get("/api/reviews?sort_by=owner&order=asc")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toBeSortedBy("owner", { ascending: true });
+      });
+  });
+  test('This endpoint should sort by votes in asc order', () => {
+    return request(app)
+    .get('/api/reviews?sort_by=votes&order=asc')
+    .expect(200)
+    .then(({ body }) => {
+      expect(body).toBeSortedBy("votes", {
+        ascending: true
+      });
+    });
+  });
+  test('This endpoint should sort reviews by category', () => {
+    return request(app)
+			.get(`/api/reviews?category_name=social deduction`)
+			.expect(200)
+			.then((result) => {
+        console.log(result.body);
+				expect(result.body).toHaveLength(11);
+				result.body.forEach((review) => {
+					expect(review.category).toBe("social deduction");
+				});
+			});
+  });
+ });
 
 describe('GET /api/reviews/:review_id/comments', () => {
   test('This endpoint of GET 200 responds with comments containing the properties below', () => {
