@@ -151,6 +151,30 @@ describe('/api/users', () => {
       expect(body.msg).toBe('Route not found')
     })
   }); 
+  test('This endpoint of POST 201 should respond with the posted user', () => {
+    const input = {
+      username: 'Phenomenal Mo',
+      name: 'Muhammed',
+      avatar_url: 'https://scontent.fman4-1.fna.fbcdn.net/v/t39.30808-1/240653661_1307534729705397_4073721090934236336_n.jpg?stp=cp0_dst-jpg_p80x80&_nc_cat=100&ccb=1-7&_nc_sid=7206a8&_nc_ohc=3YqdnitHZ4YAX9BRki5&_nc_ht=scontent.fman4-1.fna&oh=00_AT-dTZIzrC45Wd4l-3KX_0-Ojz3Z8oMOtVBSS-WYQYA_pQ&oe=630FE48D'
+    }
+    return request(app)
+    .post('/api/users').send(input).expect(201).then(({ body }) => {
+      expect(body.returnUser).toEqual(
+        expect.objectContaining({
+          username: 'Phenomenal Mo',
+          name: 'Muhammed',
+          avatar_url: 'https://scontent.fman4-1.fna.fbcdn.net/v/t39.30808-1/240653661_1307534729705397_4073721090934236336_n.jpg?stp=cp0_dst-jpg_p80x80&_nc_cat=100&ccb=1-7&_nc_sid=7206a8&_nc_ohc=3YqdnitHZ4YAX9BRki5&_nc_ht=scontent.fman4-1.fna&oh=00_AT-dTZIzrC45Wd4l-3KX_0-Ojz3Z8oMOtVBSS-WYQYA_pQ&oe=630FE48D'
+        })
+      );
+    })
+  });
+  test('This endpoint of DELETE 204 should delete the comments associated to user', () => {
+    return request(app)
+    .delete(`/api/users/mallionaire`).expect(204).then(({ body }) => {
+      console.log(body);
+      expect(body).toEqual({});
+    });
+  });
 });
 
 describe('GET /api/reviews/:review_id (comment count)', () => {
@@ -163,7 +187,7 @@ describe('GET /api/reviews/:review_id (comment count)', () => {
   });
 });
 
-describe.only('GET /api/reviews', () => {
+describe('GET /api/reviews', () => {
   test('This endpoint of GET 200 responds with an array of review objects', () => {
     return request(app)
       .get('/api/reviews')
@@ -260,7 +284,7 @@ describe.only('GET /api/reviews', () => {
   });
   test('This endpoint should sort reviews by category', () => {
     return request(app)
-			.get(`/api/reviews?category_name=social deduction`)
+			.get(`/api/reviews?category=social deduction`)
 			.expect(200)
 			.then((result) => {
         console.log(result.body);

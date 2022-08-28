@@ -6,7 +6,7 @@ const { getReviewById, updateReview, getReviews} = require('./controller/reviews
 const { getAPI, healthCheck } = require('./controller/api.controller');
 const { getCategories } = require('./controller/categories.controller')
 const { getComments, postComments, deleteComments } = require('./controller/comments.controller')
-const { getUsers } = require('./controller/users.controller')
+const { getUsers, getUsersByUsername, postUsers, deleteUsers } = require('./controller/users.controller')
 const {
 	handleCustomErrors,
 	handlePsqlErrors,
@@ -37,6 +37,11 @@ app.get('/api/reviews/:review_id', getReviewById);
 app.patch('/api/reviews/:review_id', updateReview);
 
 app.get('/api/users', getUsers);
+app.post('/api/users', postUsers);
+
+
+app.get('/api/users/:username', getUsersByUsername);
+app.delete('/api/users/:username', deleteUsers);
 
 app.get('/api/reviews', getReviews);
 
