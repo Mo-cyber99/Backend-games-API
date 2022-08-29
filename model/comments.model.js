@@ -11,9 +11,9 @@ exports.selectComments = (review_id) => {
 
 exports.insertComments = ({ author, body }, review_id) => {
     return db
-    .query(`INSERT INTO comments (author, body, review_id)
-    VALUES ($1, $2, $3)
-    RETURNING author, body;`, [author, body, review_id])
+    .query(`INSERT INTO comments (author, body, review_id, votes, created_at)
+    VALUES ($1, $2, $3, 0, $4)
+    RETURNING *;`, [author, body, review_id, new Date])
     .then((result) => {
         if(!author && body) {
             Promise.reject({
@@ -36,5 +36,24 @@ exports.removeComments = (comment_id) => {
                 msg: 'bad request'
               });
         }
+    });
+}
+
+exports.updateCommentVote = (comment_id, updateComment) => {
+    const {inc_votes} = updateComment;
+    return db
+    .query(`UPDATE comments SET votes = votes + $1
+    WHERE comment_id = $2 RETURNING *;`, [inc_votes, comment_id])
+    .then((result) => {
+        if(!result.rows.length) {
+            return Promise.reject({ status: 404, msg: "not found"});
+        } else if(!inc_votes) {
+                return Promise.reject({
+                    status: 400,
+                    msg: 'bad request',
+                detail: 'Invalid data type'
+                });
+            }
+            return result.rows[0];
     });
 }

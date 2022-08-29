@@ -454,4 +454,85 @@ describe('DELETE /api/comments/:comment_id', () => {
         expect(body.msg).toBe('bad request');
       });
   });
+});
+
+describe('PATCH /api/comments/:comment_id', () => {
+  test('This endpoint of PATCH 201 responds with the comment object after its vote count has been updated', () => {
+    const COMMENT_ID = 1;
+    return request
+    .agent(app)
+    .patch(`/api/comments/${COMMENT_ID}`)
+    .send({ inc_votes: -1 })
+    .expect(200)
+    .then(({ body }) => {
+      expect(body.comment).toEqual({
+      comment_id: 1,
+      body: 'I loved this game too!',
+      votes: 15,
+      author: 'bainesface',
+      review_id: 2,
+      created_at: expect.any(String)
+      })
+    })
+  });
+})
+
+
+describe('POST /api/categories', () => {
+  test('This endpoint of POST 201 should respond with the posted category', () => {
+    const input = {
+      slug: 'wrestling',
+      description: 'Simulations of real life wrestling action!'
+    }
+    return request(app)
+    .post('/api/categories').send(input).expect(201).then(({ body }) => {
+      expect(body.category).toEqual(
+        expect.objectContaining({
+          slug: 'wrestling',
+           description: 'Simulations of real life wrestling action!'
+        })
+        );
+    });
+  });
+  test('new endpoint added to GET /api', () => {
+    request(app).get('/api').expect(200)
+        .then(({body}) => {
+                expect(body.apis["POST /api/categories"]).toEqual(expect.any(Object));
+        });
+});
+});
+
+describe('POST /api/reviews', () => {
+  test('This endpoint of POST 201 should respond with the posted review', () => {
+    const input = {
+      owner: 'bainesface',
+      review_img_url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSqPmfWg9IZaZw1ZFOxAKnVSlP5V3-PsnMasw&usqp=CAU',
+      title: 'Civilization VI',
+      review_body: 'An epic game of exploartion into new ages!',
+      designer: 'Sid Meier',
+      category: 'strategy'
+    }
+    request(app)
+    .post('/api/reviews').send(input).expect(201).then(({ body }) => {
+      expect(body.reviews).toEqual(
+        expect.objectContaining({
+          review_id: 14,
+          owner: 'bainesface',
+          review_img_url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSqPmfWg9IZaZw1ZFOxAKnVSlP5V3-PsnMasw&usqp=CAU',
+          title: 'Civilization VI',
+          review_body: 'An epic game of exploartion into new ages!',
+          designer: 'Sid Meier',
+          category: 'strategy',
+          created_at: expect.any(String),
+          votes: 0      
+        })
+      );
+    });
+  });
+});
+
+describe('DELETE /api/reviews/:review_id', () => {
+  test('responds with DELETE 204 and no body', () => {
+    return request(app).delete('/api/reviews/1').expect(204);
+});
 })

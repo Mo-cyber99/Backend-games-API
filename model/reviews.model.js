@@ -64,3 +64,29 @@ exports.selectReviews = (sort_by = "created_at", order = "desc", category) => {
     //     return reviews;
     // })
 };
+
+exports.insertReview = (newReviews) => {
+    const {owner, review_img_url, title, review_body, designer, category} = newReviews;
+    return db
+    .query(`INSERT INTO reviews (owner, review_img_url, title, review_body, designer, category, votes, created_at) 
+    VALUES ($1, $2, $3, $4, $5, $6, 0, $7) RETURNING *;`, [owner, review_img_url, title, review_body,designer, category, new Date])
+    .then((result) => {
+        if(!result.rows.length) {
+            return Promise.reject({ status: 404, msg: "Review not found"});
+        }
+        return result.rows[0];
+    })
+};
+
+exports.removeReviews = (review_id) => {
+    return db
+    .query(`DELETE FROM reviews WHERE review_id = $1 RETURNING *;`, [review_id])
+    .then((result) => {
+        if(!result.rows.length) {
+            Promise.reject({
+                status: 400,
+                msg: 'bad request'
+              });
+        }
+    }); 
+};

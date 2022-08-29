@@ -1,4 +1,4 @@
-const { selectReviewById, patchReview, selectReviews } = require('../model/reviews.model')
+const { selectReviewById, patchReview, selectReviews, insertReview, removeReviews } = require('../model/reviews.model')
 
 const { checkIfCategoryExists  } = require('../model/utils.model')
 
@@ -33,3 +33,18 @@ exports.getReviews = (req, res, next) => {
     // })
     .catch(next)
 };
+
+exports.postReviews = (req, res, next) => {
+  const newReviews = req.body;
+  insertReview(newReviews).then((reviews) => {
+    res.status(201).send({reviews});
+  })
+  .catch(next)
+};
+
+exports.deleteReviews = (req, res, next) => {
+  const {review_id} = req.params;
+  removeReviews(review_id).then(() => {
+    res.status(204).send();
+  });
+}
