@@ -216,7 +216,7 @@ describe("/api/users", () => {
   });
 });
 
-describe.only("GET /api/users/:username", () => {
+describe("GET /api/users/:username", () => {
   test("this endpoint of GET 200 responds with objects of username", () => {
     return request(app)
       .get(`/api/users/bainesface`)
