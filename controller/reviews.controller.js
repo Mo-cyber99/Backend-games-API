@@ -17,8 +17,8 @@ exports.updateReview = (req, res, next) => {
 };
 
 exports.getReviews = (req, res, next) => {
-    const { sort_by, order, category } = req.query;
-    const promises = [selectReviews(sort_by, order, category)];
+    const { sort_by, order, category, limit, p } = req.query;
+    const promises = [selectReviews(sort_by, order, category, limit, p)];
 
   if (category) {
     promises.push(checkIfCategoryExists(category));

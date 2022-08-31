@@ -18,6 +18,7 @@ exports.selectUsersByUsername = (username) => {
                 msg: 'bad request'
               });
         }
+        return result.rows[0];
     });
 }
 

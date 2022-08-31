@@ -32,7 +32,12 @@ exports.patchReview = (review_id, inc_votes) => {
     });
 };
 
-exports.selectReviews = (sort_by = "created_at", order = "desc", category) => {
+exports.selectReviews = (sort_by = "created_at", order = "desc", category, limit = 10, p = 1) => {
+    let offset = 0;
+    if (p > 1) {
+        offset = (limit * p) - limit
+    };
+
     const validSortBy = ["created_at", "votes", "owner", "title"];
 	const validOrderBy = ["asc", "desc"];
 	const validCategory = [];
@@ -50,7 +55,7 @@ exports.selectReviews = (sort_by = "created_at", order = "desc", category) => {
     }
 
     if(validSortBy.includes(sort_by) && validOrderBy.includes(order)) {
-        queryStr += `GROUP BY reviews.review_id ORDER BY ${sort_by} ${order}`
+        queryStr += `GROUP BY reviews.review_id ORDER BY ${sort_by} ${order} LIMIT ${limit} OFFSET ${offset}`
     }
 
         return db
