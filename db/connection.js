@@ -16,6 +16,7 @@ const config =
         ssl: {
           rejectUnauthorized: false,
         },
+        max: 2,
       }
     : {};
 
